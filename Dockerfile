@@ -1,6 +1,6 @@
 # -- ESTÁGIO 1: CONSTRUÇÃO DA APLICAÇÃO --
-# Use uma imagem com Maven e um JDK para construir o projeto
-FROM maven:3.8.3-openjdk-21 AS build
+# Usa uma imagem com Maven e um JDK 21 que existe
+FROM maven:3.9.6-sapmachine-21 AS build
 WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline
@@ -8,8 +8,8 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # -- ESTÁGIO 2: CRIAÇÃO DA IMAGEM FINAL --
-# Use uma imagem base leve para rodar a aplicação
-FROM openjdk:17-jdk-slim
+# Usa uma imagem base leve com o mesmo JDK
+FROM openjdk:21-jdk-slim
 WORKDIR /app
 # Copia o arquivo JAR do estágio de construção
 COPY --from=build /app/target/*.jar app.jar
