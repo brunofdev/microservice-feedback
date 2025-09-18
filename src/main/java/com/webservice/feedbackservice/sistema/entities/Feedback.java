@@ -4,12 +4,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
 
 
-@Data
+
 @Entity
 @Table(name = "user_feedback")
+@Data
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +24,39 @@ public class Feedback {
     private int userRating;
     @NotNull(message = "O horário do feedback é obrigatório")
     @PastOrPresent(message = "O horário não pode ser no futuro")
-    private LocalDate time;
+    private LocalDateTime time;
 
     public Feedback(){};
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUserFeedback() {
+        return userFeedback;
+    }
+
+    public void setUserFeedback(String userFeedback) {
+        this.userFeedback = userFeedback;
+    }
+
+    public int getUserRating() {
+        return userRating;
+    }
+
+    public void setUserRating(int userRating) {
+        this.userRating = userRating;
+    }
+
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDateTime time) {
+        this.time = time;
+    }
 }

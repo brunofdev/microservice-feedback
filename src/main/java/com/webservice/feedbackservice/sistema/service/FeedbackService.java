@@ -7,6 +7,9 @@ import com.webservice.feedbackservice.sistema.repository.FeedbackRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+
+import java.time.LocalDateTime;
+
 @Service
 public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
@@ -19,9 +22,11 @@ public class FeedbackService {
 
     public FeedbackCreateDTO saveNewFeedback(FeedbackCreateDTO dto){
         Feedback feedback = modelMapper.map(dto, Feedback.class);
+        feedback.setTime(LocalDateTime.now());
         feedbackRepository.save(feedback);
         return modelMapper.map(feedback, FeedbackCreateDTO.class);
     }
+
 
 
 }
