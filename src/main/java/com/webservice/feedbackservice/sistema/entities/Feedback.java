@@ -3,8 +3,6 @@ package com.webservice.feedbackservice.sistema.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -12,7 +10,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "user_feedback")
-public class FeedbackEntity {
+public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,5 +24,5 @@ public class FeedbackEntity {
     @PastOrPresent(message = "O horário não pode ser no futuro")
     private LocalDate time;
 
-    public FeedbackEntity(){};
+    public Feedback(){};
 }
