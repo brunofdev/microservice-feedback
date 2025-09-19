@@ -2,6 +2,7 @@ package com.webservice.feedbackservice.sistema.service;
 
 import com.webservice.feedbackservice.sistema.controller.FeedbackController;
 import com.webservice.feedbackservice.sistema.dto.FeedbackCreateDTO;
+import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.entities.Feedback;
 import com.webservice.feedbackservice.sistema.repository.FeedbackRepository;
 import org.modelmapper.ModelMapper;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FeedbackService {
@@ -25,6 +28,14 @@ public class FeedbackService {
         feedback.setTime(LocalDateTime.now());
         feedbackRepository.save(feedback);
         return modelMapper.map(feedback, FeedbackCreateDTO.class);
+    }
+    public  List<FeedbackDTO> listAllExists(){
+        List<Feedback> feedbackList = feedbackRepository.findAll();
+        List<FeedbackDTO> feedbackDTOS = new ArrayList<>();
+        for(Feedback feedback : feedbackList){
+            feedbackDTOS.add(modelMapper.map(feedback, FeedbackDTO.class));
+        }
+        return feedbackDTOS;
     }
 
 

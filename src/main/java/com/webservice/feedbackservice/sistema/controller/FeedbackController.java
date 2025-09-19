@@ -1,12 +1,13 @@
 package com.webservice.feedbackservice.sistema.controller;
 
 import com.webservice.feedbackservice.sistema.dto.FeedbackCreateDTO;
-import com.webservice.feedbackservice.sistema.entities.Feedback;
+import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.service.FeedbackService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/feedback")
@@ -19,8 +20,12 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
 
-    @PostMapping("criar-feedback")
+    @PostMapping("/criar-feedback")
     public ResponseEntity<FeedbackCreateDTO> createFeedback(@RequestBody @Valid FeedbackCreateDTO feedBackCreateDTO){
         return ResponseEntity.ok(feedbackService.saveNewFeedback(feedBackCreateDTO));
+    }
+    @GetMapping("/listar-todos")
+    public ResponseEntity<List<FeedbackDTO>> listAllFeedbacks(@RequestBody FeedbackDTO dto){
+        return ResponseEntity.ok().body(feedbackService.listAllExists());
     }
 }
