@@ -25,7 +25,7 @@ public class FeedbackController {
         return ResponseEntity.ok(feedbackService.saveNewFeedback(feedBackCreateDTO));
     }
     @GetMapping("/listar-todos")
-    public ResponseEntity<List<FeedbackDTO>> listAllFeedbacks(@RequestBody FeedbackDTO dto){
+    public ResponseEntity<List<FeedbackDTO>> listAllFeedbacks(){
         return ResponseEntity.ok().body(feedbackService.listAllExists());
     }
 }
