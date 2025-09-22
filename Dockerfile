@@ -1,17 +1,19 @@
-# -- ESTÁGIO 1: CONSTRUÇÃO DA APLICAÇÃO --
-# Usa uma imagem com Maven e um JDK 21 que existe
-FROM maven:3.9.6-sapmachine-21 AS build
-WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src ./src
-RUN mvn clean package -DskipTests
+# Usa uma imagem base com Java 21 do Eclipse Temurin.
+FROM eclipse-temurin:21-jdk
 
-# -- ESTÁGIO 2: CRIAÇÃO DA IMAGEM FINAL --
-# Usa uma imagem base leve com o mesmo JDK
-FROM openjdk:21-jdk-slim
-WORKDIR /app
-# Copia o arquivo JAR do estágio de construção
-COPY --from=build /app/target/*.jar app.jar
-# Define o ponto de entrada para a aplicação
+# Define o diretorio de trabalho no container
+WORKDIR /feedbackservice
+
+# Copia o arquivo JAR do seu projeto para o container
+COPY target/feedbackservice-0.0.1-SNAPSHOT.jar app.jar
+
+# Configura as variaveis de ambiente para o banco de dados
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/feedbackdb
+ENV SPRING_DATASOURCE_USERNAME=postgres
+ENV SPRING_DATASOURCE_PASSWORD=S4i4D4M4tr1X
+
+# Expoe a porta que o Spring Boot usa (padrao 8080)
+EXPOSE 8080
+
+# Comando para executar o aplicativo
 ENTRYPOINT ["java", "-jar", "app.jar"]
