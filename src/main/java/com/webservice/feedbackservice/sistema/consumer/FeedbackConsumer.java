@@ -4,7 +4,9 @@ import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.service.FeedbackService;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FeedbackConsumer {
     private static final String QUEUE_NAME = "feedback-create.queue";
 
