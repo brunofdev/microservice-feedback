@@ -1,6 +1,5 @@
 package com.webservice.feedbackservice.sistema.service;
 
-import com.webservice.feedbackservice.sistema.controller.FeedbackController;
 import com.webservice.feedbackservice.sistema.dto.FeedbackCreateDTO;
 import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.entities.Feedback;
@@ -23,11 +22,9 @@ public class FeedbackService {
         this.modelMapper = new ModelMapper();
     }
 
-    public FeedbackCreateDTO saveNewFeedback(FeedbackCreateDTO dto){
+    public void saveNewFeedback(FeedbackDTO dto){
         Feedback feedback = modelMapper.map(dto, Feedback.class);
-        feedback.setTime(LocalDateTime.now());
         feedbackRepository.save(feedback);
-        return modelMapper.map(feedback, FeedbackCreateDTO.class);
     }
     public  List<FeedbackDTO> listAllExists(){
         List<Feedback> feedbackList = feedbackRepository.findAll();

@@ -1,0 +1,20 @@
+package com.webservice.feedbackservice.sistema.consumer;
+
+import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
+import com.webservice.feedbackservice.sistema.service.FeedbackService;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class FeedbackConsumer {
+    private static final String QUEUE_NAME = "feedback-create.queue";
+
+    @Autowired
+    private FeedbackService feedbackService; // Injeta o serviço
+
+    @RabbitListener(queues = QUEUE_NAME)
+    public void receiveMessage(FeedbackDTO feedbackDTO) {
+        System.out.println("Mensagem recebida. Delegando para o serviço de processamento.");
+        feedbackService.saveNewFeedback(feedbackDTO); // Delega o processamento
+    }
+}
+
