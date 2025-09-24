@@ -24,6 +24,7 @@ public class Feedback {
     private int userRating;
     @NotNull(message = "O horário do feedback é obrigatório")
     @PastOrPresent(message = "O horário não pode ser no futuro")
+    @Column(name = "time")
     private LocalDateTime createdAt;
 
     public Feedback(){};
