@@ -24,7 +24,7 @@ public class Feedback {
     private int userRating;
     @NotNull(message = "O horário do feedback é obrigatório")
     @PastOrPresent(message = "O horário não pode ser no futuro")
-    private LocalDateTime time;
+    private LocalDateTime createdAt;
 
     public Feedback(){};
 
@@ -52,11 +52,11 @@ public class Feedback {
         this.userRating = userRating;
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setTime(LocalDateTime time) {
-        this.time = time;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
