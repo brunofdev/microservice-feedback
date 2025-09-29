@@ -26,6 +26,9 @@ public class Feedback {
     @PastOrPresent(message = "O horário não pode ser no futuro")
     @Column(name = "time")
     private LocalDateTime createdAt;
+    @NotNull(message = "Username deve ser preenchido para criar feedbacks")
+    @Column(name = "user_name")
+    private String userName;
 
     public Feedback(){};
 
@@ -59,5 +62,13 @@ public class Feedback {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

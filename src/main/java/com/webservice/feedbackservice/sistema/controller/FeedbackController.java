@@ -10,16 +10,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/feedback")
-@CrossOrigin(origins = "*")
+@RequestMapping("/feedbackservice")
+@CrossOrigin(origins = "*")/*possivelmente sera necessario remover para nao dar conflito com o apigateway*/
 public class FeedbackController {
-
     private final FeedbackService feedbackService;
 
     public FeedbackController (FeedbackService feedbackService){
         this.feedbackService = feedbackService;
     }
-    @GetMapping("/listar-todos")
+    @GetMapping("/getallfeedbacks")
     public ResponseEntity<List<FeedbackDTO>> listAllFeedbacks(){
         return ResponseEntity.ok().body(feedbackService.listAllExists());
     }
