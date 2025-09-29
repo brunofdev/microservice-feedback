@@ -2,7 +2,9 @@ package com.webservice.feedbackservice.sistema.validation;
 
 import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.exceptions.UserNameIsEmptyException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class FeedbackValidation {
     public void validationFeedback(FeedbackDTO feedbackDTO){
 
