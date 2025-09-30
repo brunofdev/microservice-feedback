@@ -19,9 +19,9 @@ public class FeedbackService {
     private  final ModelMapper modelMapper;
     private final FeedbackValidation feedbackValidation;
 
-    public FeedbackService(FeedbackRepository feedbackRepository, FeedbackValidation feedbackValidation){
+    public FeedbackService(FeedbackRepository feedbackRepository, FeedbackValidation feedbackValidation, ModelMapper modelMapper){
         this.feedbackRepository = feedbackRepository;
-        this.modelMapper = new ModelMapper();
+        this.modelMapper = modelMapper;
         this.feedbackValidation = feedbackValidation;
     }
 
