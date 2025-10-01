@@ -2,6 +2,7 @@ package com.webservice.feedbackservice.sistema.controller;
 
 import com.webservice.feedbackservice.sistema.dto.FeedbackCreateDTO;
 import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
+import com.webservice.feedbackservice.sistema.dto.UsersWithFeedbackDTO;
 import com.webservice.feedbackservice.sistema.service.FeedbackService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,13 @@ import java.util.List;
 public class FeedbackController {
     private final FeedbackService feedbackService;
 
+    private String urlUserService;
+
     public FeedbackController (FeedbackService feedbackService){
         this.feedbackService = feedbackService;
     }
     @GetMapping("/getallfeedbacks")
-    public ResponseEntity<List<FeedbackDTO>> listAllFeedbacks(){
-        return ResponseEntity.ok().body(feedbackService.listAllExists());
+    public ResponseEntity<List<UsersWithFeedbackDTO>> listAllFeedbacks(){
+        return ResponseEntity.ok().body(feedbackService.getUsersWithHaveFeedback());
     }
 }
