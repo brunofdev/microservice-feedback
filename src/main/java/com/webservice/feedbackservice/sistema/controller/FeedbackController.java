@@ -3,6 +3,7 @@ package com.webservice.feedbackservice.sistema.controller;
 import com.webservice.feedbackservice.sistema.dto.FeedbackCreateDTO;
 import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.dto.UsersWithFeedbackDTO;
+import com.webservice.feedbackservice.sistema.dto.apiresponse.ApiResponse;
 import com.webservice.feedbackservice.sistema.service.FeedbackService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class FeedbackController {
         this.feedbackService = feedbackService;
     }
     @GetMapping("/getallfeedbacks")
-    public ResponseEntity<List<UsersWithFeedbackDTO>> listAllFeedbacks(){
-        return ResponseEntity.ok().body(feedbackService.listAllWithUserDetails());
+    public ResponseEntity<ApiResponse<List<UsersWithFeedbackDTO>>> listAllFeedbacks(){
+        return ResponseEntity.ok().body(ApiResponse.success("Recurso Obtido", feedbackService.listAllWithUserDetails()));
     }
 }
