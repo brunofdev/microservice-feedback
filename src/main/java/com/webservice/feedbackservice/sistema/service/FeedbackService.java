@@ -36,7 +36,7 @@ public class FeedbackService {
     @Value("${userservice.api.url}")
     private String urlUserService;
 
-    @Value("$internal.api.secret")
+    @Value("${api.internal.secret}")
     private String internalApiSecret;
 
     public FeedbackService(FeedbackRepository feedbackRepository, FeedbackValidation feedbackValidation,
