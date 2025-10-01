@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FeedbackService {
@@ -63,33 +64,47 @@ public class FeedbackService {
     private List<String> getUsersWithFeedback(){
         return feedbackRepository.findDistinctUserNames();
     }
-    public List<UserDTO> requestUserInfo(List<String> userName){
+    public List<UsersWithFeedbackDTO> listAllWithUserDetails() {
+        // 1. Busca todos os feedbacks no banco local
+        List<Feedback> feedbacks = feedbackRepository.findAll();
+
+        // 2. Extrai a lista de usernames únicos desses feedbacks
+        List<String> userNames = feedbacks.stream()
+                .map(Feedback::getUserName)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 3. Se houver usernames, busca os detalhes deles no user-service
+        List<UserDTO> userDetails = requestUserDetails(userNames);
+
+        // 4. Mapeia tudo para o DTO final
+        return feedbackMapper.mapUsersWithFeedbackDTO(userDetails, feedbacks);
+    }
+
+    // Metodo privado para fazer a chamada externa
+    private List<UserDTO> requestUserDetails(List<String> userNames) {
+        if (userNames.isEmpty()) {
+            return Collections.emptyList();
+        }
         WebClient webClient = webClientBuilder.baseUrl(urlUserService).build();
-        List<String> usersNeedingDetails = getUsersWithFeedback();
+
         ApiResponse<List<UserDTO>> apiResponse = webClient.post()
-                .uri("/internal/users/details")
+                .uri("/internal/users/details") // Path corrigido que corresponde ao InternalUserController
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header("X-Internal-Secret", internalApiSecret)
-                .body(Mono.just(usersNeedingDetails), new ParameterizedTypeReference<List<String>>() {})
+                .body(Mono.just(userNames), new ParameterizedTypeReference<List<String>>() {}) // Usa a lista correta
                 .retrieve()
-                //regra para erros
                 .onStatus(
                         status -> status.is4xxClientError() || status.is5xxServerError(),
-                        response -> Mono.error(new UserDatailsNotFoundExcpetion("Dados dos usuarios indisponiveis no momento") )
+                        response -> Mono.error(new UserDatailsNotFoundExcpetion("Dados dos usuarios indisponiveis no momento"))
                 )
-                //o que fazer em caso de sucesso na resposta
                 .bodyToMono(new ParameterizedTypeReference<ApiResponse<List<UserDTO>>>() {})
-                //bloqueia a execucao ate que a resposta chegue
                 .block();
-        if(apiResponse != null && apiResponse.getStatus()){
-            return  apiResponse.getDados();
+
+        if (apiResponse != null && apiResponse.getStatus()) {
+            return apiResponse.getDados();
         }
         return Collections.emptyList();
-    }
-    public List<UsersWithFeedbackDTO> getUsersWithHaveFeedback(){
-        List<Feedback>  feedbacks = feedbackRepository.findAll();
-        List<UserDTO> users = requestUserInfo(getUsersWithFeedback());
-        return feedbackMapper.mapUsersWithFeedbackDTO(users, feedbacks);
     }
 
 

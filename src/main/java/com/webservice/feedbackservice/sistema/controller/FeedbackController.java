@@ -23,6 +23,6 @@ public class FeedbackController {
     }
     @GetMapping("/getallfeedbacks")
     public ResponseEntity<List<UsersWithFeedbackDTO>> listAllFeedbacks(){
-        return ResponseEntity.ok().body(feedbackService.getUsersWithHaveFeedback());
+        return ResponseEntity.ok().body(feedbackService.listAllWithUserDetails());
     }
 }
