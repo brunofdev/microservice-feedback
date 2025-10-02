@@ -18,7 +18,6 @@ public class ApiResponse<T> {
         this.dados = dados;
         this.erro = erro;
     }
-
     public static <T> ApiResponse<T> success(String message, T data){
         return new ApiResponse<>(true, message, data, null);
     }
@@ -31,27 +30,21 @@ public class ApiResponse<T> {
     public void setStatus(boolean status){
         this.status = status;
     }
-
     public ApiError getErro() {
         return erro;
     }
-
     public void setErro(ApiError erro) {
         this.erro = erro;
     }
-
     public String getMessage() {
         return message;
     }
-
     public void setMessage(String message) {
         this.message = message;
     }
-
     public T getDados() {
         return dados;
     }
-
     public void setDados(T dados) {
         this.dados = dados;
     }

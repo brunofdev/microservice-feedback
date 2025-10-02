@@ -36,7 +36,6 @@ public class FeedbackService {
 
     @Value("${userservice.api.url}")
     private String urlUserService;
-
     @Value("${api.internal.secret}")
     private String internalApiSecret;
 
@@ -75,21 +74,21 @@ public class FeedbackService {
         return feedbackMapper.mapUsersWithFeedbackDTO(userDetails, feedbacks);
     }
     private List<UserDTO> requestUserDetailsForUserService(List<String> userNames) {
-        WebClient webClient = webClientBuilder.baseUrl(urlUserService).build();
-        ApiResponse<List<UserDTO>> apiResponse = webClient.post()
-                .uri("/internal/users/details") // Path corrigido que corresponde ao InternalUserController
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header("X-Internal-Secret", internalApiSecret)
-                .body(Mono.just(userNames), new ParameterizedTypeReference<List<String>>() {}) // Usa a lista correta
-                .retrieve()
-                .onStatus(
-                        status -> status.is4xxClientError() || status.is5xxServerError(),
-                        response -> Mono.error(new UserDatailsNotFoundExcpetion("Dados dos usuarios indisponiveis no momento"))
-                )
-                .bodyToMono(new ParameterizedTypeReference<ApiResponse<List<UserDTO>>>() {})
-                .block();
-        feedbackValidation.validateApiResponse(apiResponse);
-        return apiResponse.getDados();
-    }
+            WebClient webClient = webClientBuilder.baseUrl(urlUserService).build();
+            ApiResponse<List<UserDTO>> apiResponse = webClient.post()
+                    .uri("/internal/users/details") // Path corrigido que corresponde ao InternalUserController
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header("X-Internal-Secret", internalApiSecret)
+                    .body(Mono.just(userNames), new ParameterizedTypeReference<List<String>>() {}) // Usa a lista correta
+                    .retrieve()
+                    .onStatus(
+                            status -> status.is4xxClientError() || status.is5xxServerError(),
+                            response -> Mono.error(new UserDatailsNotFoundExcpetion("Dados dos usuarios indisponiveis no momento"))
+                    )
+                    .bodyToMono(new ParameterizedTypeReference<ApiResponse<List<UserDTO>>>() {})
+                    .block();
+            feedbackValidation.validateApiResponse(apiResponse);
+            return apiResponse.getDados();
+        }
 }
 

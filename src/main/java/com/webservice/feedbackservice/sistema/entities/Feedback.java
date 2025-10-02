@@ -1,13 +1,10 @@
 package com.webservice.feedbackservice.sistema.entities;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
 
 import java.time.LocalDateTime;
-
-
 
 @Entity
 @Table(name = "user_feedback")
@@ -31,43 +28,33 @@ public class Feedback {
     private String userName;
 
     public Feedback(){};
-
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
-
     public String getUserFeedback() {
         return userFeedback;
     }
-
     public void setUserFeedback(String userFeedback) {
         this.userFeedback = userFeedback;
     }
-
     public int getUserRating() {
         return userRating;
     }
-
     public void setUserRating(int userRating) {
         this.userRating = userRating;
     }
-
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-
     public String getUserName() {
         return userName;
     }
-
     public void setUserName(String userName) {
         this.userName = userName;
     }
