@@ -26,13 +26,16 @@ public class GlobalExceptionHandler {
         }
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "Validation Failed", errorMessage);
     }
-
     @ExceptionHandler(UserDatailsNotFoundExcpetion.class)
     public ResponseEntity<ApiResponse<Object>> handleUserDetailsNotFound(UserDatailsNotFoundExcpetion ex) {
         logger.error("Dados de usuário não encontrados: ", ex);
         return buildErrorResponse(HttpStatus.SERVICE_UNAVAILABLE, "User Data Unavailable", ex.getMessage());
     }
-
+    @ExceptionHandler(ApiResponseIsEmpty.class)
+    public ResponseEntity<ApiResponse<Object>> handleApiResponseIsEmpty(ApiResponseIsEmpty ex) {
+        logger.error("A resposta da api do user-service esta vazia ", ex);
+        return buildErrorResponse(HttpStatus.SERVICE_UNAVAILABLE, "ApiResponse from user-service Data is Empty", ex.getMessage());
+    }
     @ExceptionHandler({org.springframework.web.reactive.function.client.WebClientResponseException.class})
     public ResponseEntity<ApiResponse<Object>> handleWebClientResponseException(Exception ex) {
         logger.error("Erro na resposta do WebClient: ", ex);
@@ -63,14 +66,12 @@ public class GlobalExceptionHandler {
         String message = "Ocorreu um erro inesperado no servidor.";
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", message);
     }
-
     private ResponseEntity<ApiResponse<Object>> buildErrorResponse(HttpStatus status, String error, String message) {
         ApiError apiError = new ApiError();
         apiError.setStatus(status.value());
         apiError.setError(error);
         apiError.setMessage(message);
         apiError.setTimestamp(LocalDateTime.now());
-
         ApiResponse<Object> response = ApiResponse.error(message, apiError);
         return new ResponseEntity<>(response, status);
     }

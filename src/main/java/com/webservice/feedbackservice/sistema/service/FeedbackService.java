@@ -15,6 +15,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 @Service
 public class FeedbackService {
     private final FeedbackRepository feedbackRepository;
-    private  final ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
     private final FeedbackValidation feedbackValidation;
     private final WebClient.Builder webClientBuilder;
     private final FeedbackMapper feedbackMapper;
@@ -39,6 +40,13 @@ public class FeedbackService {
     @Value("${api.internal.secret}")
     private String internalApiSecret;
 
+    //este metodo utilitario serve para ser utilizado junto a biblioteca model mapper,
+    //mepeando listas sem a necessidade de percorrer a lista individualmente
+    private <S, T> List<T> mapListUtil(List<S> source, Class<T> targetClass){
+        return source.stream()
+                .map(element -> modelMapper.map(element, targetClass))
+                .toList();
+    }
     public FeedbackService(FeedbackRepository feedbackRepository, FeedbackValidation feedbackValidation,
                             ModelMapper modelMapper, WebClient.Builder webClientBuilder, FeedbackMapper feedbackMapper){
         this.feedbackRepository = feedbackRepository;
@@ -54,40 +62,20 @@ public class FeedbackService {
         feedbackRepository.save(feedback);
     }
     public  List<FeedbackDTO> listAllExists(){
-        List<Feedback> feedbackList = feedbackRepository.findAll();
-        List<FeedbackDTO> feedbackDTOS = new ArrayList<>();
-        for(Feedback feedback : feedbackList){
-            feedbackDTOS.add(modelMapper.map(feedback, FeedbackDTO.class));
-        }
-        return feedbackDTOS;
+        return mapListUtil(feedbackRepository.findAll(), FeedbackDTO.class);
     }
     private List<String> getUsersWithFeedback(){
         return feedbackRepository.findDistinctUserNames();
     }
     public List<UsersWithFeedbackDTO> listAllWithUserDetails() {
-        // 1. Busca todos os feedbacks no banco local
+        List<String> userNames = feedbackRepository.findDistinctUserNames();
         List<Feedback> feedbacks = feedbackRepository.findAll();
-
-        // 2. Extrai a lista de usernames únicos desses feedbacks
-        List<String> userNames = feedbacks.stream()
-                .map(Feedback::getUserName)
-                .distinct()
-                .collect(Collectors.toList());
-
-        // 3. Se houver usernames, busca os detalhes deles no user-service
-        List<UserDTO> userDetails = requestUserDetails(userNames);
-
-        // 4. Mapeia tudo para o DTO final
+        List<UserDTO> userDetails = requestUserDetailsForUserService(userNames);
+        feedbackValidation.validateUserNames(userNames);
         return feedbackMapper.mapUsersWithFeedbackDTO(userDetails, feedbacks);
     }
-
-    // Metodo privado para fazer a chamada externa
-    private List<UserDTO> requestUserDetails(List<String> userNames) {
-        if (userNames.isEmpty()) {
-            return Collections.emptyList();
-        }
+    private List<UserDTO> requestUserDetailsForUserService(List<String> userNames) {
         WebClient webClient = webClientBuilder.baseUrl(urlUserService).build();
-
         ApiResponse<List<UserDTO>> apiResponse = webClient.post()
                 .uri("/internal/users/details") // Path corrigido que corresponde ao InternalUserController
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -100,13 +88,8 @@ public class FeedbackService {
                 )
                 .bodyToMono(new ParameterizedTypeReference<ApiResponse<List<UserDTO>>>() {})
                 .block();
-
-        if (apiResponse != null && apiResponse.getStatus()) {
-            return apiResponse.getDados();
-        }
-        return Collections.emptyList();
+        feedbackValidation.validateApiResponse(apiResponse);
+        return apiResponse.getDados();
     }
-
-
 }
 
