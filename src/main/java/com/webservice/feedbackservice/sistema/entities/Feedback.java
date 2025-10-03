@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user_feedback")
-@Data
 public class Feedback {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +52,7 @@ public class Feedback {
         this.createdAt = createdAt;
     }
     public String getUserName() {
-        return userName;
+        return userName.toUpperCase();
     }
     public void setUserName(String userName) {
         this.userName = userName;
