@@ -12,5 +12,10 @@ public class UserDTO {
     private String nome;
     private String userName;
     private String email;
+
+    public String getUserName() {
+        return userName.toUpperCase();
+    }
 }
+
 

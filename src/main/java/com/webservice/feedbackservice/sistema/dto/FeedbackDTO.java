@@ -22,5 +22,9 @@ public class FeedbackDTO implements Serializable {
     private int userRating;
     private LocalDateTime createdAt;
     private String userName;
+
+    public String getUserName() {
+        return userName.toUpperCase();
+    }
 }
 

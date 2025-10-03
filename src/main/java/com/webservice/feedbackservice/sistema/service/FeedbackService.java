@@ -5,6 +5,7 @@ import com.webservice.feedbackservice.sistema.dto.UserDTO;
 import com.webservice.feedbackservice.sistema.dto.UsersWithFeedbackDTO;
 import com.webservice.feedbackservice.sistema.dto.apiresponse.ApiResponse;
 import com.webservice.feedbackservice.sistema.entities.Feedback;
+import com.webservice.feedbackservice.sistema.exceptions.UnauthorizedCallException;
 import com.webservice.feedbackservice.sistema.exceptions.UserDatailsNotFoundExcpetion;
 import com.webservice.feedbackservice.sistema.mapper.FeedbackMapper;
 import com.webservice.feedbackservice.sistema.repository.FeedbackRepository;
@@ -82,9 +83,13 @@ public class FeedbackService {
                     .body(Mono.just(userNames), new ParameterizedTypeReference<List<String>>() {}) // Usa a lista correta
                     .retrieve()
                     .onStatus(
-                            status -> status.is4xxClientError() || status.is5xxServerError(),
+                            status ->  status.is5xxServerError(),
                             response -> Mono.error(new UserDatailsNotFoundExcpetion("Dados dos usuarios indisponiveis no momento"))
+                    ).onStatus(
+                            status -> status.is4xxClientError(),
+                               response -> Mono.error(new UnauthorizedCallException("Não fomos autorizados a acessar os dados"))
                     )
+
                     .bodyToMono(new ParameterizedTypeReference<ApiResponse<List<UserDTO>>>() {})
                     .block();
             feedbackValidation.validateApiResponse(apiResponse);

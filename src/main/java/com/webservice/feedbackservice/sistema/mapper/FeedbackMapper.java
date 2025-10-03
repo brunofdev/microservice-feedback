@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -30,7 +31,7 @@ public class FeedbackMapper {
         Map<String, UserDTO> userMapByUsername = mapListUserDTOtoMap(usersDetails);
         List<UsersWithFeedbackDTO> feedbacksWithUserDetails = new ArrayList<>();
         for (Feedback feedback : feedbacks) {
-            String nome = userMapByUsername.containsKey(feedback.getUserName())  ? userMapByUsername.get(feedback.getUserName()).getNome() : "Nome não encontrado";
+            String nome = userMapByUsername.containsKey(feedback.getUserName().toUpperCase(Locale.ROOT))  ? userMapByUsername.get(feedback.getUserName()).getNome() : "Nome não encontrado";
             feedbacksWithUserDetails.add(
                     mapUsersWithFeedbackDTO(nome, feedback)
             );
