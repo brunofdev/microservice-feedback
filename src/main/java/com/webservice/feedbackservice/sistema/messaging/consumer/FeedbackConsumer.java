@@ -1,4 +1,4 @@
-package com.webservice.feedbackservice.sistema.consumer;
+package com.webservice.feedbackservice.sistema.messaging.consumer;
 
 import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.service.FeedbackService;
@@ -17,7 +17,7 @@ public class FeedbackConsumer {
     public void receiveMessage(FeedbackDTO feedbackDTO) {
        try {
            System.out.println("Mensagem recebida. Delegando para o serviço de processamento.");
-           feedbackService.saveNewFeedback(feedbackDTO); // Delega o processamento
+           feedbackService.createNewFeedback(feedbackDTO); // Delega o processamento
        }catch (Exception e){
            System.out.println ("Erro ao processar mensagem: " + e.getMessage());
        }

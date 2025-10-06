@@ -8,6 +8,7 @@ import com.webservice.feedbackservice.sistema.entities.Feedback;
 import com.webservice.feedbackservice.sistema.exceptions.UnauthorizedCallException;
 import com.webservice.feedbackservice.sistema.exceptions.UserDatailsNotFoundExcpetion;
 import com.webservice.feedbackservice.sistema.mapper.FeedbackMapper;
+import com.webservice.feedbackservice.sistema.messaging.producer.FeedbackEmailCreate;
 import com.webservice.feedbackservice.sistema.repository.FeedbackRepository;
 import com.webservice.feedbackservice.sistema.validation.FeedbackValidation;
 import org.modelmapper.ModelMapper;
@@ -16,16 +17,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class FeedbackService {
@@ -34,6 +30,7 @@ public class FeedbackService {
     private final FeedbackValidation feedbackValidation;
     private final WebClient.Builder webClientBuilder;
     private final FeedbackMapper feedbackMapper;
+    private final FeedbackEmailCreate feedbackEmailCreate;
 
     @Value("${userservice.api.url}")
     private String urlUserService;
@@ -48,18 +45,21 @@ public class FeedbackService {
                 .toList();
     }
     public FeedbackService(FeedbackRepository feedbackRepository, FeedbackValidation feedbackValidation,
-                            ModelMapper modelMapper, WebClient.Builder webClientBuilder, FeedbackMapper feedbackMapper){
+                            ModelMapper modelMapper, WebClient.Builder webClientBuilder, FeedbackMapper feedbackMapper,
+                            FeedbackEmailCreate feedbackEmailCreate){
         this.feedbackRepository = feedbackRepository;
         this.modelMapper = modelMapper;
         this.feedbackValidation = feedbackValidation;
         this.webClientBuilder = webClientBuilder;
         this.feedbackMapper = feedbackMapper;
+        this.feedbackEmailCreate = feedbackEmailCreate;
     }
 
-    public void saveNewFeedback(FeedbackDTO dto){
+    public void createNewFeedback(FeedbackDTO dto){
         feedbackValidation.validateFeedback(dto);
         Feedback feedback = modelMapper.map(dto, Feedback.class);
         feedbackRepository.save(feedback);
+        feedbackEmailCreate.sendToQueueRabbit(dto);
     }
     public  List<FeedbackDTO> listAllExists(){
         return mapListUtil(feedbackRepository.findAll(), FeedbackDTO.class);
