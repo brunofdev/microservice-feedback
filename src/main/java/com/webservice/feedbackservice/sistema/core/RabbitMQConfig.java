@@ -8,18 +8,32 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
-    private static final String queue1_name = "feedback-create.queue";
-    private static final String queue2_name = "feedback.created.email.queue";
+
+    // Nomes originais das filas
+    private static final String QUEUE1_NAME = "feedback-create.queue";
+    private static final String QUEUE2_NAME = "feedback.created.email.queue";
+
+    /**
+     * Fila para criação de feedback
+     */
     @Bean
-    public Queue queue1(){
-        return new Queue(queue1_name, true);
+    public Queue feedbackCreateQueue() {
+        return new Queue(QUEUE1_NAME, true); // durável
     }
+
+    /**
+     * Fila para envio de e-mail de feedback
+     */
     @Bean
-    public Queue queue2(){
-        return new Queue(queue2_name, true);
+    public Queue feedbackEmailQueue() {
+        return new Queue(QUEUE2_NAME, true); // durável
     }
+
+    /**
+     * Conversor de mensagens JSON
+     */
     @Bean
-    public MessageConverter jsonMessageConverter(){
+    public MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 }
