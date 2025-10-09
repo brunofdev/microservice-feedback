@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/feedbackservice")
-@CrossOrigin(origins = "*")/*possivelmente sera necessario remover para nao dar conflito com o apigateway*/
+@RequestMapping("/api/feedback")
 public class FeedbackController {
     private final FeedbackService feedbackService;
 
@@ -25,4 +24,11 @@ public class FeedbackController {
     public ResponseEntity<ApiResponse<List<UsersWithFeedbackDTO>>> listAllFeedbacks(){
         return ResponseEntity.ok().body(ApiResponse.success("Recurso Obtido", feedbackService.listAllWithUserDetails()));
     }
+
+    @DeleteMapping("/deletefeedback/{id}")
+    public ResponseEntity<ApiResponse> deleteFeedback(@PathVariable Long id){
+        feedbackService.deleteFeedback(id);
+        return ResponseEntity.ok(ApiResponse.success("Recurso removido", null));
+    }
+
 }

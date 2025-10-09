@@ -1,5 +1,6 @@
 package com.webservice.feedbackservice.sistema.dto;
 
+import com.webservice.feedbackservice.sistema.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,8 +13,10 @@ public class UserDTO {
     private String nome;
     private String userName;
     private String email;
+    private UserRole userRole;
 
-    public String getUserName() {
+
+    public String getUserName(){
         return userName.toUpperCase();
     }
 }

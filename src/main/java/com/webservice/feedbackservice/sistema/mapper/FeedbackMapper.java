@@ -4,6 +4,7 @@ import com.webservice.feedbackservice.sistema.dto.FeedbackDTO;
 import com.webservice.feedbackservice.sistema.dto.UserDTO;
 import com.webservice.feedbackservice.sistema.dto.UsersWithFeedbackDTO;
 import com.webservice.feedbackservice.sistema.entities.Feedback;
+import com.webservice.feedbackservice.sistema.enums.UserRole;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Component;
 
@@ -18,22 +19,29 @@ public class FeedbackMapper {
     public Map<String, UserDTO> mapListUserDTOtoMap (List<UserDTO>users){
         return users.stream().collect(Collectors.toMap(UserDTO::getUserName, user -> user));
     }
-    public UsersWithFeedbackDTO mapUsersWithFeedbackDTO(String nome, Feedback feedback){
+    public UsersWithFeedbackDTO mapUsersWithFeedbackDTO(String nome, UserRole userRole, Feedback feedback){
         return new UsersWithFeedbackDTO(
+                feedback.getId(),
                 feedback.getUserFeedback(),
                 feedback.getUserRating(),
                 feedback.getCreatedAt(),
                 feedback.getUserName(),
-                nome
+                nome,
+                userRole
         );
     }
     public List<UsersWithFeedbackDTO> mapUsersWithFeedbackDTO(List<UserDTO> usersDetails, List<Feedback> feedbacks) {
         Map<String, UserDTO> userMapByUsername = mapListUserDTOtoMap(usersDetails);
         List<UsersWithFeedbackDTO> feedbacksWithUserDetails = new ArrayList<>();
         for (Feedback feedback : feedbacks) {
-            String nome = userMapByUsername.containsKey(feedback.getUserName().toUpperCase(Locale.ROOT))  ? userMapByUsername.get(feedback.getUserName()).getNome() : "Nome não encontrado";
+            String nome = userMapByUsername.containsKey(feedback.getUserName().toUpperCase(Locale.ROOT))
+                    ? userMapByUsername.get(feedback.getUserName()).getNome()
+                    : "Nome não encontrado";
+            UserRole userRole = userMapByUsername.containsKey(feedback.getUserName())
+                    ? userMapByUsername.get(feedback.getUserName()).getUserRole()
+                    : UserRole.USER;
             feedbacksWithUserDetails.add(
-                    mapUsersWithFeedbackDTO(nome, feedback)
+                    mapUsersWithFeedbackDTO(nome, userRole, feedback)
             );
         }
         return feedbacksWithUserDetails;

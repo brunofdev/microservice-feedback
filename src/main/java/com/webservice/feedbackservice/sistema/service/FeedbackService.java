@@ -5,6 +5,7 @@ import com.webservice.feedbackservice.sistema.dto.UserDTO;
 import com.webservice.feedbackservice.sistema.dto.UsersWithFeedbackDTO;
 import com.webservice.feedbackservice.sistema.dto.apiresponse.ApiResponse;
 import com.webservice.feedbackservice.sistema.entities.Feedback;
+import com.webservice.feedbackservice.sistema.exceptions.FeedbackNotFoundException;
 import com.webservice.feedbackservice.sistema.exceptions.UnauthorizedCallException;
 import com.webservice.feedbackservice.sistema.exceptions.UserDatailsNotFoundExcpetion;
 import com.webservice.feedbackservice.sistema.mapper.FeedbackMapper;
@@ -95,5 +96,11 @@ public class FeedbackService {
             feedbackValidation.validateApiResponse(apiResponse);
             return apiResponse.getDados();
         }
+
+    public void deleteFeedback(Long id) {
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new FeedbackNotFoundException("o feedback com o id :::" + id + "::: não foi encontrado"));
+        feedbackRepository.delete(feedback);
+    }
 }
 
