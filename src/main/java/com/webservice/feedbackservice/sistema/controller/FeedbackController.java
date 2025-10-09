@@ -20,6 +20,7 @@ public class FeedbackController {
     public FeedbackController (FeedbackService feedbackService){
         this.feedbackService = feedbackService;
     }
+    //este endpoint não precisa de token jwt, restrição configurada no apigateway
     @GetMapping("/getallfeedbacks")
     public ResponseEntity<ApiResponse<List<UsersWithFeedbackDTO>>> listAllFeedbacks(){
         return ResponseEntity.ok().body(ApiResponse.success("Recurso Obtido", feedbackService.listAllWithUserDetails()));
