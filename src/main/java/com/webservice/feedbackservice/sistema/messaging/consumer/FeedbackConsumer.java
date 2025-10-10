@@ -12,13 +12,13 @@ public class FeedbackConsumer {
     private static final String QUEUE1 = "feedback-create.queue";
     private static final String QUEUE2 = "user-deleted-feedback-cleanup.queue";
     @Autowired
-    private FeedbackService feedbackService; // Injeta o serviço
+    private FeedbackService feedbackService;
 
     @RabbitListener(queues = QUEUE1)
     public void receiveMessage(FeedbackDTO feedbackDTO) {
        try {
            System.out.println("Mensagem recebida. Delegando para o serviço de processamento.");
-           feedbackService.createNewFeedback(feedbackDTO); // Delega o processamento
+           feedbackService.createNewFeedback(feedbackDTO);
        }catch (Exception e){
            System.out.println ("Erro ao processar mensagem: " + e.getMessage());
        }
@@ -27,11 +27,11 @@ public class FeedbackConsumer {
     public void receiveMessage(UserDTO userDTO) {
         try {
             System.out.println("Mensagem recebida. Delegando para o serviço de processamento.");
-            feedbackService.deleteFeedbacksWithUser(userDTO); // Delega o processamento
+            feedbackService.deleteFeedbacksWithUser(userDTO);
             System.out.println("Mensagem processada.");
         }catch (Exception e){
             System.out.println ("Erro ao processar mensagem: " + e.getMessage());
         }
-    }
+}
 }
 
