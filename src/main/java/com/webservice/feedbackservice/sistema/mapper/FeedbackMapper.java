@@ -33,7 +33,7 @@ public class FeedbackMapper {
                 userRole
         );
     }
-    public List<UsersWithFeedbackDTO> mapUsersWithFeedbackDTO(List<UserDTO> usersDetails, List<Feedback> feedbacks) {
+    public List<UsersWithFeedbackDTO> mapUsersWithFeedbackDTO(List<UserDTO> usersDetails, List<Feedback> feedbacks)     {
         Map<String, UserDTO> userMapByUsername = mapListUserDTOtoMap(usersDetails);
         List<UsersWithFeedbackDTO> feedbacksWithUserDetails = new ArrayList<>();
         for (Feedback feedback : feedbacks) {
@@ -45,7 +45,6 @@ public class FeedbackMapper {
                 nome = userFound.getNome();
                 userRole = userFound.getUserRole() != null ? userFound.getUserRole() : UserRole.USER;
             }
-
             feedbacksWithUserDetails.add(
                     mapUsersWithFeedbackDTO(nome, userRole, feedback)
             );

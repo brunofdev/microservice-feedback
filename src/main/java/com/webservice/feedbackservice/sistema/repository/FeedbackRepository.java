@@ -11,4 +11,5 @@ import java.util.List;
 public interface FeedbackRepository extends JpaRepository<Feedback, Long> {
     @Query("SELECT DISTINCT f.userName FROM Feedback f")
     List<String> findDistinctUserNames();
+    List<Feedback> findByUserNameIgnoreCase(String userName);
 }

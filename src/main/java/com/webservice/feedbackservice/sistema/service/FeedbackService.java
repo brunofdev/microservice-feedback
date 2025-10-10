@@ -102,5 +102,9 @@ public class FeedbackService {
                 .orElseThrow(() -> new FeedbackNotFoundException("o feedback com o id :::" + id + "::: não foi encontrado"));
         feedbackRepository.delete(feedback);
     }
+    public void deleteFeedbacksWithUser(UserDTO userDTO){
+        List<Feedback> feedbackList = feedbackRepository.findByUserNameIgnoreCase(userDTO.getUserName());
+        feedbackRepository.deleteAll(feedbackList);
+    }
 }
 
